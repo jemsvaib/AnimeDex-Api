@@ -13,12 +13,22 @@ def home():
     return redirect('https://anime-dex1.vercel.app')
 
 
-@app.route('/db/save')
-def saveToDB():
+@app.route('/db/view')
+def saveView():
     anime = request.args.get('anime')
     if anime:
         anime = anime.strip()
         if anime != '':
             viewsdb.update_one({'anime': anime}, {'$inc': {'views': 1}},upsert = True)
+            return 'Success'
+    return 'Something Went Wrong...'
+
+@app.route('/db/watch')
+def saveWatch():
+    anime = request.args.get('anime')
+    if anime:
+        anime = anime.strip()
+        if anime != '':
+            viewsdb.update_one({'anime': anime}, {'$inc': {'watch': 1}},upsert = True)
             return 'Success'
     return 'Something Went Wrong...'
