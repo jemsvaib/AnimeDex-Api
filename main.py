@@ -23,7 +23,7 @@ def saveView():
         if anime != '':
             viewsdb.update_one({'anime': anime}, {
                                '$inc': {'views': 1}}, upsert=True)
-            today = date.today()
+            today = str(date.today())
             daydb.update_one({'day': today}, {
                 '$inc': {'views': 1}}, upsert=True)
             return 'Success'
@@ -38,7 +38,7 @@ def saveWatch():
         if anime != '':
             viewsdb.update_one({'anime': anime}, {
                                '$inc': {'watch': 1}}, upsert=True)
-            today = date.today()
+            today = str(date.today())
             daydb.update_one({'day': today}, {
                 '$inc': {'watch': 1}}, upsert=True)
             return 'Success'
