@@ -48,7 +48,7 @@ def home():
     text['per day'] = []
 
     for i in daydb.find({}):
-        text['per day'].append(i)
+        text['per day'].append(str(i))
     return text
 
 
