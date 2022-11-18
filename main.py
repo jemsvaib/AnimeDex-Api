@@ -12,7 +12,33 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return redirect('https://anime-dex1.vercel.app')
+    views = 0
+    watch = 0
+    t1,t2 = [0],[0]
+    a1=a2=0
+
+    for i in viewsdb.find({}):
+        x = i.get('views')
+        y = i.get('watch')
+        if x:
+            a1+=1
+            views+=x
+            if x > t1[0] and i.get('anime') != 'home-animedex':
+                t1 = [x,i.get('anime')]
+        if y:
+            a2+=1
+            watch+=y
+            if y > t2[0] and i.get('anime') != 'home-animedex':
+                t2 = [y,i.get('anime')]
+
+    text = str(views + watch) + '\n'
+    text += str(views,watch)   + '\n'
+    text += str(t1,t2)  + '\n' 
+    text += str(a1,a2) + '\n'
+
+    for i in daydb.find({}):
+        text += '\n' + str(i)  + '\n'
+    return text
 
 
 @app.route('/db/view')
