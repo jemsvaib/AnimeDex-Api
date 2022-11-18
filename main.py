@@ -32,9 +32,9 @@ def home():
                 t2 = [y,i.get('anime')]
 
     text = str(views + watch) + '\n'
-    text += str(views,watch)   + '\n'
-    text += str(t1,t2)  + '\n' 
-    text += str(a1,a2) + '\n'
+    text += str((views,watch))   + '\n'
+    text += str((t1,t2))  + '\n' 
+    text += str((a1,a2)) + '\n'
 
     for i in daydb.find({}):
         text += '\n' + str(i)  + '\n'
