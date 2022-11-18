@@ -31,24 +31,24 @@ def home():
             if y > t2[0] and i.get('anime') != 'home-animedex':
                 t2 = [y,i.get('anime')]
     text = {}
-    text['total views'] = str(views + watch)
+    text['total views'] = views + watch
 
     text['views'] = {}
-    text['views']['anime'] = str(views)
-    text['views']['episode'] = str(watch)
+    text['views']['anime'] = views
+    text['views']['episode'] = watch
  
     text['top'] = {}
-    text['top']['anime'] = str(t1)
-    text['top']['episode'] = str(t2)
+    text['top']['anime'] = t1
+    text['top']['episode'] = t2
 
     text['pages opened'] = {}
-    text['pages opened']['anime'] = str(a1)
-    text['pages opened']['episode'] = str(a2)
+    text['pages opened']['anime'] = a1
+    text['pages opened']['episode'] = a2
 
     text['per day'] = []
 
     for i in daydb.find({}):
-        text['per day'].append(str(i))
+        text['per day'].append(i)
     return text
 
 
