@@ -2,6 +2,8 @@ from datetime import date
 from flask import Flask, redirect, request
 import pymongo
 
+from gogo import get_GPage, get_html
+
 mUrl = 'mongodb+srv://TechZ:Bots@websitedata.wdycbvp.mongodb.net/?retryWrites=true&w=majority'
 
 db = pymongo.MongoClient(mUrl).AnimeDex
@@ -14,29 +16,34 @@ app = Flask(__name__)
 def home():
     views = 0
     watch = 0
-    t1,t2 = [0],[0]
-    a1=a2=0
+    t1, t2 = [0], [0]
+    a1 = a2 = 0
 
     for i in viewsdb.find({}):
         x = i.get('views')
         y = i.get('watch')
         if x:
-            a1+=1
-            views+=x
-            if x > t1[0] and i.get('anime') != 'home-animedex':
-                t1 = [x,i.get('anime')]
+            a1 += 1
+            views += x
+            if x > t1[0] and i.get('anime') != 'home-animedex' and i.get('anime') != 'search-animedex':
+                t1 = [x, i.get('anime')]
+
+            if i.get('anime') == 'home-animedex':
+                text['home page views'] = x
+            elif i.get('anime') == 'search-animedex':
+                text['searches'] = x
         if y:
-            a2+=1
-            watch+=y
-            if y > t2[0] and i.get('anime') != 'home-animedex':
-                t2 = [y,i.get('anime')]
+            a2 += 1
+            watch += y
+            if y > t2[0] and i.get('anime') != 'home-animedex' and i.get('anime') != 'search-animedex':
+                t2 = [y, i.get('anime')]
     text = {}
     text['total views'] = views + watch
 
     text['views'] = {}
     text['views']['anime'] = views
     text['views']['episode'] = watch
- 
+
     text['top'] = {}
     text['top']['anime'] = t1
     text['top']['episode'] = t2
@@ -80,3 +87,13 @@ def saveWatch():
                 '$inc': {'watch': 1}}, upsert=True)
             return 'Success'
     return 'Something Went Wrong...'
+
+
+@app.route('/latest/<page>')
+def latest(page):
+    try:
+        data = get_GPage(page)
+        html = get_html(data)
+        return {'html': html}
+    except:
+        return {'html': ''}
