@@ -14,6 +14,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
+    text = {}
     views = 0
     watch = 0
     t1, t2 = [0], [0]
@@ -37,7 +38,6 @@ def home():
             watch += y
             if y > t2[0] and i.get('anime') != 'home-animedex' and i.get('anime') != 'search-animedex':
                 t2 = [y, i.get('anime')]
-    text = {}
     text['total views'] = views + watch
 
     text['views'] = {}
