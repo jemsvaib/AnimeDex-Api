@@ -62,6 +62,8 @@ def home():
 
 count = 0
 top_cache = []
+working = []
+not_working = []
 
 
 @app.route('/top')
@@ -70,24 +72,33 @@ def top():
     global top_cache
     count += 1
 
-    if count < 100:
-        return {'data': top_cache}
+    if len(top_cache) != 0:
+        if count < 100:
+            return {'data': top_cache}
     count = 0
 
     data = []
     ignore = ['home-animedex', 'search-animedex', 'home-blackanime']
-    for i in viewsdb.find({}).sort([('views', -1), ('watch', -1)]):
+    x = viewsdb.find({}).sort([('views', -1), ('watch', -1)])
+    for i in x:
+        print(i)
         if i.get('anime') in ignore:
             continue
         try:
             if '<a class="ep-btn" href="/episode/' in requests.get('https://animedex.live/anime/' + i.get('anime')).text:
-                data.append(i)
+                data.append(i.get('anime'))
+                working.append(i.get('anime'))
         except:
+            not_working.append(i.get('anime'))
             pass
         if len(data) == 10:
             break
+    print('Top Cache Updated...')
     top_cache = data
     return {'data': data}
+
+
+top()
 
 
 @app.route('/db/view')
