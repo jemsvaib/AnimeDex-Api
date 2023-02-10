@@ -81,6 +81,7 @@ def top():
     ignore = ['home-animedex', 'search-animedex', 'home-blackanime']
     x = viewsdb.find({}).sort([('views', -1), ('watch', -1)])
     for i in x:
+        print(i)
         if i.get('anime') in ignore:
             continue
         try:
@@ -102,7 +103,6 @@ def top():
     return {'data': data}
 
 
-top()
 
 
 @app.route('/db/view')
