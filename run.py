@@ -1,3 +1,4 @@
+import requests
 from datetime import date
 from flask import Flask, redirect, request
 import pymongo
@@ -57,6 +58,36 @@ def home():
     for i in daydb.find({}):
         text['per day'].append(str(i))
     return text
+
+
+count = 0
+top_cache = []
+
+
+@app.route('/top')
+def top():
+    global count
+    global top_cache
+    count += 1
+
+    if count < 100:
+        return {'data': top_cache}
+    count = 0
+
+    data = []
+    ignore = ['home-animedex', 'search-animedex', 'home-blackanime']
+    for i in viewsdb.find({}).sort([('views', -1), ('watch', -1)]):
+        if i.get('anime') in ignore:
+            continue
+        try:
+            if '<a class="ep-btn" href="/episode/' in requests.get('https://animedex.live/anime/' + i.get('anime')).text:
+                data.append(i)
+        except:
+            pass
+        if len(data) == 10:
+            break
+    top_cache = data
+    return {'data': data}
 
 
 @app.route('/db/view')
