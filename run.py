@@ -81,16 +81,20 @@ def top():
     ignore = ['home-animedex', 'search-animedex', 'home-blackanime']
     x = viewsdb.find({}).sort([('views', -1), ('watch', -1)])
     for i in x:
-        print(i)
         if i.get('anime') in ignore:
             continue
         try:
-            if '<a class="ep-btn" href="/episode/' in requests.get('https://animedex.live/anime/' + i.get('anime')).text:
+            if i.get('anime') in working:
                 data.append(i.get('anime'))
-                working.append(i.get('anime'))
+            elif i.get('anime') in not_working:
+                continue
+            else:
+                if '<a class="ep-btn" href="/episode/' in requests.get('https://animedex.live/anime/' + i.get('anime')).text:
+                    data.append(i.get('anime'))
+                    working.append(i.get('anime'))
         except:
             not_working.append(i.get('anime'))
-            pass
+
         if len(data) == 10:
             break
     print('Top Cache Updated...')
