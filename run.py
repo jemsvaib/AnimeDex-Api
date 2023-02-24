@@ -1,6 +1,6 @@
 import requests
 from datetime import date
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, send_file
 import pymongo
 
 from gogo import get_GPage, get_html
@@ -71,11 +71,24 @@ def home():
 
 
 topdb = db.top
+from stats import day, over
 
 
 @app.route("/top")
 def top():
     return {"top": topdb.find_one({"anime": "top"}).get("top")}
+
+
+@app.route("/stats/day")
+def day_():
+    img = day()
+    return send_file(img, mimetype="image/jpg")
+
+
+@app.route("/stats/over")
+def over_():
+    img = over()
+    return send_file(img, mimetype="image/jpg")
 
 
 @app.route("/db/view")
