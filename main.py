@@ -125,6 +125,3 @@ def latest(page):
         return {"html": html}
     except:
         return {"html": ""}
-
-if __name__ == "__main__":
-    app.run()
