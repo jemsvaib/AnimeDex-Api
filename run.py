@@ -12,6 +12,10 @@ viewsdb = db.views
 daydb = db.day
 app = Flask(__name__)
 
+techzdb = pymongo.MongoClient(
+    "mongodb+srv://techz:bots@cluster0.uzrha.mongodb.net/?retryWrites=true&w=majority"
+).techzapi.userdb
+
 
 @app.route("/")
 def home():
@@ -94,12 +98,20 @@ def over_():
 @app.route("/db/view")
 def saveView():
     anime = request.args.get("anime")
+    key = request.args.get("key")
+
+    if not techzdb.find_one({"api_key": key}):
+        return "Invalid Key"
+
     if anime:
         anime = anime.strip()
         if anime != "":
             viewsdb.update_one({"anime": anime}, {"$inc": {"views": 1}}, upsert=True)
             today = str(date.today())
             daydb.update_one({"day": today}, {"$inc": {"views": 1}}, upsert=True)
+
+            techzdb.update_one({"api_key": key}, {"$inc": {"animedex": 1}}, upsert=True)
+
             return "Success"
     return "Something Went Wrong..."
 
@@ -107,12 +119,20 @@ def saveView():
 @app.route("/db/watch")
 def saveWatch():
     anime = request.args.get("anime")
+    key = request.args.get("key")
+
+    if not techzdb.find_one({"api_key": key}):
+        return "Invalid Key"
+
     if anime:
         anime = anime.strip()
         if anime != "":
             viewsdb.update_one({"anime": anime}, {"$inc": {"watch": 1}}, upsert=True)
             today = str(date.today())
             daydb.update_one({"day": today}, {"$inc": {"watch": 1}}, upsert=True)
+
+            techzdb.update_one({"api_key": key}, {"$inc": {"animedex": 1}}, upsert=True)
+
             return "Success"
     return "Something Went Wrong..."
 
@@ -125,6 +145,7 @@ def latest(page):
         return {"html": html}
     except:
         return {"html": ""}
+
 
 if __name__ == "__main__":
     app.run()
