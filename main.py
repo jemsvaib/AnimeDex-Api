@@ -113,7 +113,7 @@ def increment_techz(key, data):
     else:
         animedex[today] += 1
 
-    techzdb.update_one({"api_key": key}, {"$inc": {"animedex": animedex}}, upsert=True)
+    techzdb.update_one({"api_key": key}, {"$set": {"animedex": animedex}}, upsert=True)
 
 
 @app.route("/db/view")
