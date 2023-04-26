@@ -98,11 +98,11 @@ def over_():
 def increment_techz(key, data):
     animedex = data.get("animedex")
     if not animedex:
-        animedex = []
+        animedex = {}
 
     try:
         animedex = int(animedex)
-        animedex = []
+        animedex = {}
     except:
         pass
 
