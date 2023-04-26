@@ -95,12 +95,34 @@ def over_():
     return send_file(img, mimetype="image/jpg")
 
 
+def increment_techz(key, data):
+    animedex = data.get("animedex")
+    if not animedex:
+        animedex = []
+
+    try:
+        animedex = int(animedex)
+        animedex = []
+    except:
+        pass
+
+    today = str(date.today())
+
+    if today not in animedex:
+        animedex[today] = 1
+    else:
+        animedex[today] += 1
+
+    techzdb.update_one({"api_key": key}, {"$inc": {"animedex": animedex}}, upsert=True)
+
+
 @app.route("/db/view")
 def saveView():
     anime = request.args.get("anime")
     key = request.args.get("key")
 
-    if not techzdb.find_one({"api_key": key}):
+    data = techzdb.find_one({"api_key": key})
+    if not data:
         return "Invalid Key"
 
     if anime:
@@ -110,7 +132,7 @@ def saveView():
             today = str(date.today())
             daydb.update_one({"day": today}, {"$inc": {"views": 1}}, upsert=True)
 
-            techzdb.update_one({"api_key": key}, {"$inc": {"animedex": 1}}, upsert=True)
+            increment_techz(key, data)
 
             return "Success"
     return "Something Went Wrong..."
@@ -121,7 +143,8 @@ def saveWatch():
     anime = request.args.get("anime")
     key = request.args.get("key")
 
-    if not techzdb.find_one({"api_key": key}):
+    data = techzdb.find_one({"api_key": key})
+    if not data:
         return "Invalid Key"
 
     if anime:
@@ -131,7 +154,7 @@ def saveWatch():
             today = str(date.today())
             daydb.update_one({"day": today}, {"$inc": {"watch": 1}}, upsert=True)
 
-            techzdb.update_one({"api_key": key}, {"$inc": {"animedex": 1}}, upsert=True)
+            increment_techz(key, data)
 
             return "Success"
     return "Something Went Wrong..."
